@@ -34,3 +34,10 @@ The deliberate trade-off: the `*` here is a **glob on whole octet positions**, n
 - A wildcard must occupy a **whole** segment. `10.0.0.1*` and `10.0.0.*1` are parse errors, not partial wildcards. If you need substring matching within an octet, this is the wrong library.
 - Octets with leading zeros (`10.0.0.01`) are rejected, for the same reason many modern parsers reject them: `010` is ambiguous across systems. Use bare decimal.
 - Invalid addresses raise rather than silently returning `False`; an access-control primitive that accepts malformed input is a liability.
+
+## Performance
+
+The window keeps a bounded buffer, so `push` is constant time and memory does not
+grow with the length of the stream. `peak` and `trough` are linear in the window
+size, which is the trade that keeps `push` cheap.
+
